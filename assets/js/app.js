@@ -3,6 +3,7 @@ const SUPASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 const _supabase = supabase.createClient(SUPASE_URL, SUPASE_ANON_KEY);
 const addComments = document.querySelector("#addComments");
 const items = document.querySelector('.items');
+const yorumKismi = document.querySelector('.yorumKismi');
 
 
 async function getData(){
@@ -22,10 +23,24 @@ async function getForm(e){
     .from('twitterApp')
     .insert({
         comments: formObj.comments,
-        kullaniciAdi: formObj.kullaniciAdi
+        kullaniciAdi: formObj.kullaniciAdi,
+        yorumlar: formObj.yorumlar
     })
     init();
+    yorumEkle();
     addComments.reset();
+}
+const yorumlar = document.querySelector('.yorumlar');
+const yorumİnput = document.querySelector('.yorumİnput');
+async function yorumEkle(){
+    const yorumBtn = document.querySelectorAll('.yorumBtn');
+    for (const yorum of yorumBtn) {
+        yorum.addEventListener('click', async function(){
+            yorumlar.innerHTML = yorumİnput.value === yorumlar.value
+        })
+
+        
+    }
 }
 async function deleteComment(){
     const deleteBtn = document.querySelectorAll('.deleteBtn');
@@ -42,28 +57,19 @@ async function deleteComment(){
     }
     
 }
-async function yorumEkle(){
-    const yorumBtn = document.querySelectorAll('.yorumBtn');
-    for (const yorum of yorumBtn) {
-        yorum.addEventListener('click', async function(){
-            const { error } = await _supabase
-                .from('twitterApp')
-                .update({ name: '' })
-                .eq('id', )
 
-            return init();
-        })
-
-    }
-}
+const addYorum = document.querySelectorAll('#addYorum');
 async function init(){
     const data = await getData();
     items.innerHTML = "";
     data.forEach(item => {
-        items.innerHTML += `<li data-commentid="${item.id}">${item.kullaniciAdi} - ${item.comments} <button class="deleteBtn">Delete</button><button class="yorumBtn">yorum yap</button></li>`
+        items.innerHTML += `<li data-commentid="${item.id}">${item.kullaniciAdi} - ${item.comments} <button class="deleteBtn">Delete</button><button class="yorumBtn">yorum yap</button></li>
+        <div class="yorumKismi"></div>`
         
     }); 
+    yorumEkle();
     deleteComment();
+
 }
 
 
